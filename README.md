@@ -1,6 +1,6 @@
 # applechecker
 
-> Check Apple Store Inventory
+> Check Apple Store Inventory +With Twilio Support
 
 Keep checking Apple Store inventory and send you alert when nearby stores have your desired device in stock.
 Also let you know if inventory becomes zero again so you don't jump out of bed when it is already too late.
@@ -11,10 +11,17 @@ Also let you know if inventory becomes zero again so you don't jump out of bed w
 ## Prerequisites
 
 * `pip install requests`
+* `pip install twilio`
 
 * A gmail account if want email alert. (Got refused by Gmail because the app is insecure? [Enable 2-Step Verification](https://support.google.com/accounts/answer/185839?hl=en) and [generate an App password]() for it. Or follow [this instruction](https://support.google.com/accounts/answer/6010255?hl=en) to allow insecure login)
 
-* For SMS alert, the script uses the free service provided by [TextBelt](http://textbelt.com/), which has some limitations like "IP addresses are limited to 75 texts per day" and "Phone numbers are limited to 3 texts every 3 minutes". Check their page for details.
+* For SMS alert, the script uses the service provided by [Twilio](http://twilio.com/), you will need to create an account and set the appropriate variables in the python script.  Be sure to include +1 in front of your phone numbers (for USA numbers) with Twilio.
+
+Make sure and set these variables in stock.py
+
+* `account = "ACCOUNTIDGOESHERE"`
+* `token = "TOKENGOESHERE"`
+* `smsFrom = "+15554443333"`
 
 ## Usage
 
@@ -33,7 +40,7 @@ python /path/to/stock.py "MNPR2LL/A" "12345" "recipient@example.com" 5 sender@gm
 Every 10 seconds, check availability of `iPhone 7 Plus T-Mobile Jet Black 128GB` near zipcode 12345 and send sms alert to `1234567890`.
 
 ```
-python /path/to/stock.py "MN5L2LL/A" "12345" "1234567890" 10
+python /path/to/stock.py "MN5L2LL/A" "12345" "+11234567890" 10
 ```
 
 Model number is a unique identifier, U.S. models end with "LL/*". (https://www.theiphonewiki.com/wiki/Model_Regions)
@@ -59,5 +66,5 @@ docker run --name my-checker-email -e MODEL="MN5L2LL/A" -e ZIP=12345 -e DEST=rec
 ```
 
 ```
-docker run --name my-checker-sms -e MODEL="MNPR2LL/A" -e ZIP="12345" -e DEST="1234567890" -e SEC=5 yuha0/applechecker
+docker run --name my-checker-sms -e MODEL="MNPR2LL/A" -e ZIP="12345" -e DEST="+11234567890" -e SEC=5 yuha0/applechecker
 ```

@@ -4,11 +4,18 @@ import sys
 import smtplib
 from socket import gaierror
 import requests
+from twilio.rest import TwilioRestClient
+
+
+#Replace the account, token and smsFrom number with those associated with your twilio account
+account = "ACCOUNTIDGOESHERE"
+token = "TOKENGOESHERE"
+smsFrom = "+15554443333"
+client = TwilioRestClient(account, token)
 
 # only tested for US stores and US text message
 URL = "http://www.apple.com/shop/retail/pickup-message"
 BUY = "http://store.apple.com/xc/product/"
-SMS = "http://textbelt.com/text"
 
 DATEFMT = "%m/%d/%Y %H:%M:%S"
 LOADING = ['-', '\\', '|', '/']
@@ -96,13 +103,8 @@ class Alert(object):
         mailer.close()
 
     def send_sms(self, message):
-        try:
-            response = requests.post(SMS, data={
-                'number': self.dest, 'message': message}).json()
-            if not response['success']:
-                print response['message']
-        except gaierror:
-            print "Couldn't reach TextBelt"
+        message = client.messages.create(to=self.dest, from_=smsFrom, body=message)
+        
 
 if __name__ == '__main__':
     main(*sys.argv[1:])
